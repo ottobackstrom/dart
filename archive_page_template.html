@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Archive — Otto Bäckström</title>
+  <meta name="description" content="Arkiv över pausade projekt, koncept och riktningar." />
+  <style>
+    :root{
+      --bg:#e7e7e5;
+      --paper:#f3f3f0;
+      --text:#101010;
+      --muted:#5e5e5e;
+      --blue:#1434ff;
+      --line:#101010;
+      --max:1680px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    a{color:inherit;text-decoration:none}
+    ::selection{background:var(--blue);color:#fff}
+
+    .wrap{
+      width:min(calc(100% - 24px), var(--max));
+      margin:0 auto;
+    }
+
+    .mono{font-family:"Courier New", Courier, monospace}
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:80;
+      background:rgba(231,231,229,.94);
+      backdrop-filter:blur(8px);
+      border-bottom:2px solid var(--line);
+    }
+    .topbar-inner{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:20px;
+      align-items:start;
+      padding:14px 0;
+    }
+    .brand{
+      font-size:12px;
+      line-height:1.45;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+      font-weight:700;
+    }
+    .nav{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:12px 18px;
+    }
+    .nav a{
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:700;
+      border-bottom:2px solid transparent;
+      padding-bottom:2px;
+    }
+    .nav a:hover{color:var(--blue);border-color:var(--blue)}
+
+    .hero{
+      padding:22px 0 18px;
+      border-bottom:2px solid var(--line);
+    }
+    .hero-grid{
+      display:grid;
+      gap:18px;
+    }
+    .eyebrow{
+      display:inline-block;
+      width:fit-content;
+      max-width:100%;
+      padding:8px 10px;
+      border:2px solid var(--line);
+      background:var(--paper);
+      font-size:10px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-weight:700;
+      transform:rotate(-2deg);
+    }
+    .hero-title{
+      margin:0;
+      font-size:clamp(56px, 16vw, 150px);
+      line-height:.82;
+      letter-spacing:-.09em;
+      text-transform:uppercase;
+      font-weight:900;
+      color:var(--blue);
+      max-width:7ch;
+    }
+    .hero-copy{
+      max-width:58ch;
+      font-size:15px;
+      line-height:1.7;
+      color:var(--muted);
+    }
+    .hero-copy p{
+      margin:0 0 14px;
+    }
+    .hero-copy p:last-child{margin-bottom:0}
+
+    .archive-meta{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:0;
+      border:2px solid var(--line);
+      background:var(--paper);
+      max-width:740px;
+    }
+    .archive-meta-item{
+      padding:14px;
+      border-right:2px solid var(--line);
+      min-height:92px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .archive-meta-item:last-child{border-right:none}
+    .archive-meta-k{
+      font-size:10px;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+    .archive-meta-v{
+      font-size:26px;
+      line-height:.9;
+      letter-spacing:-.05em;
+      text-transform:uppercase;
+      font-weight:900;
+      max-width:10ch;
+    }
+
+    .section{
+      padding:22px 0 36px;
+      border-bottom:2px solid var(--line);
+    }
+
+    .section-head{
+      display:grid;
+      gap:10px;
+      margin-bottom:18px;
+    }
+    .section-label{
+      font-size:11px;
+      line-height:1.5;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .section-title{
+      margin:0;
+      font-size:clamp(28px, 8vw, 72px);
+      line-height:.88;
+      letter-spacing:-.06em;
+      text-transform:uppercase;
+      font-weight:900;
+      max-width:10ch;
+    }
+
+    .filters{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:18px;
+    }
+    .filter{
+      padding:10px 12px 9px;
+      border:2px solid var(--line);
+      background:var(--paper);
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:700;
+      cursor:pointer;
+      transition:background .15s ease, color .15s ease, border-color .15s ease;
+    }
+    .filter:hover,
+    .filter.active{
+      background:var(--blue);
+      color:#fff;
+      border-color:var(--line);
+    }
+
+    .archive-list{
+      border-top:2px solid var(--line);
+    }
+    .archive-item{
+      display:grid;
+      grid-template-columns:64px 1fr;
+      gap:14px;
+      padding:16px 0;
+      border-bottom:2px solid var(--line);
+      transition:background .15s ease, color .15s ease;
+    }
+    .archive-item:hover{
+      background:rgba(20,52,255,.04);
+    }
+
+    .archive-index{
+      font-size:12px;
+      line-height:1.3;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+      padding-top:4px;
+    }
+
+    .archive-main{
+      display:grid;
+      gap:12px;
+      min-width:0;
+    }
+
+    .archive-top{
+      display:grid;
+      gap:10px;
+      align-items:start;
+    }
+
+    .archive-title-wrap{
+      display:grid;
+      gap:8px;
+      min-width:0;
+    }
+    .archive-title{
+      margin:0;
+      font-size:clamp(28px, 7vw, 54px);
+      line-height:.88;
+      letter-spacing:-.06em;
+      text-transform:uppercase;
+      font-weight:900;
+      max-width:12ch;
+      transition:color .15s ease;
+    }
+    .archive-item:hover .archive-title{
+      color:var(--blue);
+    }
+
+    .archive-tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+    .tag{
+      display:inline-block;
+      padding:8px 10px 7px;
+      border:2px solid var(--line);
+      background:var(--paper);
+      font-size:10px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .tag.status{
+      background:var(--blue);
+      color:#fff;
+    }
+
+    .archive-desc{
+      margin:0;
+      font-size:14px;
+      line-height:1.65;
+      color:var(--muted);
+      max-width:58ch;
+    }
+
+    .archive-bottom{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px 18px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .archive-note{
+      font-size:11px;
+      line-height:1.5;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+    .archive-link{
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:700;
+      color:var(--blue);
+    }
+
+    .footer{
+      padding:16px 0 28px;
+    }
+    .footer-inner{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    @media (min-width: 900px){
+      .hero-grid{
+        grid-template-columns:1.2fr .8fr;
+        align-items:end;
+      }
+      .section-head{
+        grid-template-columns:180px 1fr;
+        gap:22px;
+        align-items:start;
+      }
+      .archive-item{
+        grid-template-columns:80px 1fr;
+        gap:20px;
+      }
+      .archive-top{
+        grid-template-columns:1.1fr .9fr;
+        gap:18px;
+      }
+      .archive-tags{
+        justify-content:flex-end;
+      }
+      .archive-title{
+        font-size:clamp(30px, 3.5vw, 56px);
+      }
+    }
+
+    @media (max-width: 760px){
+      .wrap{width:min(calc(100% - 20px), var(--max))}
+      .topbar-inner{grid-template-columns:1fr;gap:10px}
+      .nav{justify-content:flex-start}
+      .archive-meta{grid-template-columns:1fr}
+      .archive-meta-item{
+        border-right:none;
+        border-bottom:2px solid var(--line);
+      }
+      .archive-meta-item:last-child{
+        border-bottom:none;
+      }
+      .archive-item{
+        grid-template-columns:1fr;
+        gap:8px;
+      }
+      .archive-index{
+        padding-top:0;
+      }
+      .archive-title{
+        max-width:none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="#" class="brand">Otto Bäckström<br>Digital Designer / Archive</a>
+      <nav class="nav">
+        <a href="#">Hem</a>
+        <a href="#">Projekt</a>
+        <a href="#">Archive</a>
+        <a href="#">Kontakt</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow mono">Paused work / Concepts / Open for future development</div>
+          <h1 class="hero-title">Archive</h1>
+        </div>
+
+        <div class="hero-copy mono">
+          <p>
+            Ett urval av påbörjade projekt, koncept och riktningar som för närvarande är pausade.
+            De är inte avslutade — bara vilande, öppna för vidare utveckling.
+          </p>
+          <div class="archive-meta">
+            <div class="archive-meta-item">
+              <div class="archive-meta-k mono">Entries</div>
+              <div class="archive-meta-v">08 items</div>
+            </div>
+            <div class="archive-meta-item">
+              <div class="archive-meta-k mono">Categories</div>
+              <div class="archive-meta-v">Web / Identity / Concept</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-label mono">01 / Index</div>
+          <h2 class="section-title">Pausade projekt med potential</h2>
+        </div>
+
+        <div class="filters mono">
+          <button class="filter active" data-filter="all">All</button>
+          <button class="filter" data-filter="identity">Identity</button>
+          <button class="filter" data-filter="web">Web</button>
+          <button class="filter" data-filter="concept">Concept</button>
+          <button class="filter" data-filter="interactive">Interactive</button>
+        </div>
+
+        <div class="archive-list">
+          <a class="archive-item" href="#" data-category="interactive concept">
+            <div class="archive-index mono">01</div>
+            <div class="archive-main">
+              <div class="archive-top">
+                <div class="archive-title-wrap">
+                  <h3 class="archive-title">Light Map</h3>
+                  <p class="archive-desc mono">
+                    Interaktiv ljusinstallation byggd kring geografisk närvaro och kollektiv visualisering i det offentliga rummet.
+                  </p>
+                </div>
+                <div class="archive-tags mono">
+                  <span class="tag">2025</span>
+                  <span class="tag">Interactive</span>
+                  <span class="tag">Public Space</span>
+                  <span class="tag status">Paused</span>
+                </div>
+              </div>
+              <div class="archive-bottom">
+                <div class="archive-note mono">Open for future development / concept system exists</div>
+                <div class="archive-link mono">Open notes</div>
+              </div>
+            </div>
+          </a>
+
+          <a class="archive-item" href="#" data-category="identity concept">
+            <div class="archive-index mono">02</div>
+            <div class="archive-main">
+              <div class="archive-top">
+                <div class="archive-title-wrap">
+                  <h3 class="archive-title">Unreleased Identity</h3>
+                  <p class="archive-desc mono">
+                    Visuellt system utvecklat för ett kulturprojekt som aldrig gick vidare till lansering, men där riktningen fortfarande håller.
+                  </p>
+                </div>
+                <div class="archive-tags mono">
+                  <span class="tag">2024</span>
+                  <span class="tag">Identity</span>
+                  <span class="tag">Campaign</span>
+                  <span class="tag status">Paused</span>
+                </div>
+              </div>
+              <div class="archive-bottom">
+                <div class="archive-note mono">Brand world / logics / naming direction</div>
+                <div class="archive-link mono">Open notes</div>
+              </div>
+            </div>
+          </a>
+
+          <a class="archive-item" href="#" data-category="web concept">
+            <div class="archive-index mono">03</div>
+            <div class="archive-main">
+              <div class="archive-top">
+                <div class="archive-title-wrap">
+                  <h3 class="archive-title">Archive Motion Study</h3>
+                  <p class="archive-desc mono">
+                    Typografiska rörelsestudier för en digital kampanjmiljö där gränssnitt och rörelse skulle bära samma visuella ton.
+                  </p>
+                </div>
+                <div class="archive-tags mono">
+                  <span class="tag">2025</span>
+                  <span class="tag">Web</span>
+                  <span class="tag">Motion</span>
+                  <span class="tag status">Paused</span>
+                </div>
+              </div>
+              <div class="archive-bottom">
+                <div class="archive-note mono">Prototype exists / animation direction unfinished</div>
+                <div class="archive-link mono">Open notes</div>
+              </div>
+            </div>
+          </a>
+
+          <a class="archive-item" href="#" data-category="concept identity">
+            <div class="archive-index mono">04</div>
+            <div class="archive-main">
+              <div class="archive-top">
+                <div class="archive-title-wrap">
+                  <h3 class="archive-title">Temporary Brand World</h3>
+                  <p class="archive-desc mono">
+                    Ett varumärkeskoncept byggt kring temporära miljöer, trycksaker och digital närvaro med stark typografisk struktur.
+                  </p>
+                </div>
+                <div class="archive-tags mono">
+                  <span class="tag">2024</span>
+                  <span class="tag">Identity</span>
+                  <span class="tag">Concept</span>
+                  <span class="tag status">Paused</span>
+                </div>
+              </div>
+              <div class="archive-bottom">
+                <div class="archive-note mono">Visual language / applications / no final rollout</div>
+                <div class="archive-link mono">Open notes</div>
+              </div>
+            </div>
+          </a>
+
+          <a class="archive-item" href="#" data-category="web">
+            <div class="archive-index mono">05</div>
+            <div class="archive-main">
+              <div class="archive-top">
+                <div class="archive-title-wrap">
+                  <h3 class="archive-title">Studio Portfolio Prototype</h3>
+                  <p class="archive-desc mono">
+                    En tidigare portfolio-riktning med tydlig editorial struktur, men som pausades till förmån för ett renare system.
+                  </p>
+                </div>
+                <div class="archive-tags mono">
+                  <span class="tag">2025</span>
+                  <span class="tag">Web</span>
+                  <span class="tag">Editorial</span>
+                  <span class="tag status">Paused</span>
+                </div>
+              </div>
+              <div class="archive-bottom">
+                <div class="archive-note mono">Layout system strong / replaced by current direction</div>
+                <div class="archive-link mono">Open notes</div>
+              </div>
+            </div>
+          </a>
+
+          <a class="archive-item" href="#" data-category="interactive concept">
+            <div class="archive-index mono">06</div>
+            <div class="archive-main">
+              <div class="archive-top">
+                <div class="archive-title-wrap">
+                  <h3 class="archive-title">Public Signal Interface</h3>
+                  <p class="archive-desc mono">
+                    Ett koncept för publik interaktion där visuella signaler i stadsmiljö reagerar på människors rörelse och närvaro.
+                  </p>
+                </div>
+                <div class="archive-tags mono">
+                  <span class="tag">2025</span>
+                  <span class="tag">Interactive</span>
+                  <span class="tag">Urban</span>
+                  <span class="tag status">Paused</span>
+                </div>
+              </div>
+              <div class="archive-bottom">
+                <div class="archive-note mono">Experience logic mapped / physical execution paused</div>
+                <div class="archive-link mono">Open notes</div>
+              </div>
+            </div>
+          </a>
+
+          <a class="archive-item" href="#" data-category="identity">
+            <div class="archive-index mono">07</div>
+            <div class="archive-main">
+              <div class="archive-top">
+                <div class="archive-title-wrap">
+                  <h3 class="archive-title">Monograph Identity</h3>
+                  <p class="archive-desc mono">
+                    En mer kulturell identitetsriktning för bok, utställning och digital närvaro med fokus på hård typografi och serieformat.
+                  </p>
+                </div>
+                <div class="archive-tags mono">
+                  <span class="tag">2024</span>
+                  <span class="tag">Identity</span>
+                  <span class="tag">Editorial</span>
+                  <span class="tag status">Paused</span>
+                </div>
+              </div>
+              <div class="archive-bottom">
+                <div class="archive-note mono">Strong system / awaiting right context</div>
+                <div class="archive-link mono">Open notes</div>
+              </div>
+            </div>
+          </a>
+
+          <a class="archive-item" href="#" data-category="concept web">
+            <div class="archive-index mono">08</div>
+            <div class="archive-main">
+              <div class="archive-top">
+                <div class="archive-title-wrap">
+                  <h3 class="archive-title">Digital Exhibition Draft</h3>
+                  <p class="archive-desc mono">
+                    Ett webbkoncept för att presentera ett konstprojekt som en digital utställning med rumslig navigation och arkivlogik.
+                  </p>
+                </div>
+                <div class="archive-tags mono">
+                  <span class="tag">2025</span>
+                  <span class="tag">Web</span>
+                  <span class="tag">Concept</span>
+                  <span class="tag status">Paused</span>
+                </div>
+              </div>
+              <div class="archive-bottom">
+                <div class="archive-note mono">Navigation studies / structure outlined</div>
+                <div class="archive-link mono">Open notes</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner mono">
+      <span>Otto Bäckström</span>
+      <span>Archive</span>
+      <span>Paused work / 2026</span>
+    </div>
+  </footer>
+
+  <script>
+    const filters = document.querySelectorAll(".filter");
+    const items = document.querySelectorAll(".archive-item");
+
+    filters.forEach(filter => {
+      filter.addEventListener("click", () => {
+        filters.forEach(f => f.classList.remove("active"));
+        filter.classList.add("active");
+
+        const value = filter.dataset.filter;
+
+        items.forEach(item => {
+          const category = item.dataset.category || "";
+          const show = value === "all" || category.includes(value);
+          item.style.display = show ? "grid" : "none";
+        });
+      });
+    });
+  </script>
+</body>
+</html>
