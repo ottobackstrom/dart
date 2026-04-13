@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dart Invitational — Brutalist</title>
+  <style>
+    :root{
+      --bg:#dfdfdf;
+      --text:#111111;
+      --blue:#1b22ff;
+      --red:#ff2d20;
+      --line:#111111;
+      --white:#f8f8f8;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height:1.1;
+    }
+
+    a{
+      color:var(--blue);
+      text-decoration:none;
+    }
+
+    .page{
+      width:min(1500px, 100%);
+      margin:0 auto;
+      padding:28px 22px 60px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      padding-bottom:18px;
+      border-bottom:3px solid var(--line);
+      margin-bottom:18px;
+    }
+
+    .micro{
+      font-family:"Courier New", Courier, monospace;
+      font-size:12px;
+      line-height:1.35;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+
+    .nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 18px;
+      justify-content:flex-end;
+    }
+
+    .nav a{
+      font-family:"Courier New", Courier, monospace;
+      font-size:12px;
+      text-transform:uppercase;
+      color:var(--text);
+      border-bottom:2px solid transparent;
+    }
+
+    .nav a:hover{border-color:var(--text)}
+
+    .hero{
+      padding:18px 0 26px;
+      border-bottom:3px solid var(--line);
+    }
+
+    .hero h1{
+      margin:0;
+      font-size:clamp(56px, 10vw, 156px);
+      line-height:.9;
+      letter-spacing:-.05em;
+      text-transform:uppercase;
+      color:var(--blue);
+      max-width:1180px;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:24px;
+      margin-top:32px;
+      align-items:start;
+    }
+
+    .intro{
+      max-width:520px;
+      font-family:"Courier New", Courier, monospace;
+      font-size:15px;
+      line-height:1.4;
+    }
+
+    .cta-stack{
+      display:grid;
+      gap:12px;
+      justify-items:start;
+    }
+
+    .button{
+      display:inline-block;
+      border:3px solid var(--line);
+      background:var(--blue);
+      color:var(--white);
+      padding:14px 18px 12px;
+      text-transform:uppercase;
+      font-weight:700;
+      font-size:18px;
+      line-height:1;
+      letter-spacing:-.03em;
+      box-shadow:8px 8px 0 var(--line);
+      transition:transform .08s ease, box-shadow .08s ease;
+    }
+
+    .button:hover{
+      transform:translate(3px,3px);
+      box-shadow:5px 5px 0 var(--line);
+    }
+
+    .button.secondary{
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .section{
+      padding:26px 0 18px;
+      border-bottom:3px solid var(--line);
+    }
+
+    .section-title{
+      margin:0 0 18px;
+      font-size:clamp(32px, 4vw, 64px);
+      line-height:.95;
+      letter-spacing:-.05em;
+      text-transform:uppercase;
+    }
+
+    .facts{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:18px;
+    }
+
+    .fact{
+      border:3px solid var(--line);
+      padding:16px;
+      background:var(--white);
+      min-height:180px;
+    }
+
+    .fact .label{
+      font-family:"Courier New", Courier, monospace;
+      font-size:12px;
+      text-transform:uppercase;
+      margin-bottom:22px;
+    }
+
+    .fact .value{
+      font-size:clamp(26px, 3vw, 42px);
+      line-height:.95;
+      text-transform:uppercase;
+      letter-spacing:-.04em;
+      font-weight:800;
+    }
+
+    .fact .sub{
+      margin-top:12px;
+      font-family:"Courier New", Courier, monospace;
+      font-size:13px;
+      line-height:1.4;
+    }
+
+    .two-col{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+
+    .panel{
+      border:3px solid var(--line);
+      background:var(--white);
+      padding:18px;
+    }
+
+    .panel h3{
+      margin:0 0 14px;
+      font-size:28px;
+      line-height:1;
+      text-transform:uppercase;
+      letter-spacing:-.04em;
+    }
+
+    .panel p,
+    .panel li{
+      font-family:"Courier New", Courier, monospace;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .list{
+      margin:0;
+      padding-left:18px;
+    }
+
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
+
+    .poster{
+      border:3px solid var(--line);
+      background:var(--white);
+      aspect-ratio:4/3;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:16px;
+      overflow:hidden;
+    }
+
+    .poster .tag{
+      font-family:"Courier New", Courier, monospace;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+
+    .poster .big{
+      font-size:clamp(28px, 4vw, 56px);
+      line-height:.9;
+      letter-spacing:-.06em;
+      text-transform:uppercase;
+      font-weight:900;
+    }
+
+    .poster.blue{background:var(--blue); color:var(--white)}
+    .poster.red{background:var(--red); color:var(--white)}
+    .poster.gray{background:#ebebeb;}
+
+    .register-wrap{
+      display:grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap:18px;
+      align-items:start;
+    }
+
+    .price-box{
+      border:3px solid var(--line);
+      background:var(--blue);
+      color:var(--white);
+      padding:20px;
+      position:sticky;
+      top:18px;
+    }
+
+    .price-box .eyebrow{
+      font-family:"Courier New", Courier, monospace;
+      text-transform:uppercase;
+      font-size:12px;
+      margin-bottom:22px;
+    }
+
+    .price-box .price{
+      font-size:clamp(50px, 9vw, 120px);
+      line-height:.85;
+      letter-spacing:-.08em;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+
+    .price-box p{
+      font-family:"Courier New", Courier, monospace;
+      font-size:14px;
+      line-height:1.45;
+      max-width:30ch;
+    }
+
+    form{
+      border:3px solid var(--line);
+      background:var(--white);
+      padding:18px;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-bottom:14px;
+    }
+
+    .field.full{grid-column:1/-1}
+
+    label{
+      font-family:"Courier New", Courier, monospace;
+      font-size:12px;
+      text-transform:uppercase;
+    }
+
+    input, select, textarea{
+      width:100%;
+      border:3px solid var(--line);
+      background:var(--bg);
+      color:var(--text);
+      padding:14px 12px;
+      font:inherit;
+      font-size:16px;
+      border-radius:0;
+      box-shadow:none;
+      appearance:none;
+    }
+
+    input:focus, select:focus, textarea:focus{
+      outline:none;
+      background:#fff;
+    }
+
+    textarea{
+      min-height:130px;
+      resize:vertical;
+    }
+
+    .form-note{
+      font-family:"Courier New", Courier, monospace;
+      font-size:12px;
+      line-height:1.5;
+      margin-top:8px;
+    }
+
+    .footer{
+      padding:26px 0 12px;
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .status{
+      display:none;
+      margin-top:14px;
+      border:3px solid var(--line);
+      padding:14px;
+      background:#d9ffd3;
+      font-family:"Courier New", Courier, monospace;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .status.show{display:block}
+
+    @media (max-width: 980px){
+      .hero-grid,
+      .facts,
+      .two-col,
+      .gallery,
+      .register-wrap,
+      .form-grid{
+        grid-template-columns:1fr 1fr;
+      }
+      .register-wrap{
+        grid-template-columns:1fr;
+      }
+      .price-box{
+        position:static;
+      }
+    }
+
+    @media (max-width: 680px){
+      .hero-grid,
+      .facts,
+      .two-col,
+      .gallery,
+      .form-grid{
+        grid-template-columns:1fr;
+      }
+      .page{
+        padding:18px 14px 48px;
+      }
+      .button{
+        width:100%;
+        text-align:center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="micro">
+        DART INVITATIONAL<br>
+        GÖTEBORG / 2026<br>
+        OPEN FOR REGISTRATION
+      </div>
+
+      <nav class="nav">
+        <a href="#info">Info</a>
+        <a href="#format">Format</a>
+        <a href="#program">Program</a>
+        <a href="#anmalan">Anmälan</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <h1>
+        GÅ MED I<br>
+        VÅR DART-<br>
+        TURNERING<br>
+        ANMÄL DIG<br>
+        HÄR.
+      </h1>
+
+      <div class="hero-grid">
+        <div class="intro">
+          En brutalistisk tävlingssida för er dartturnering med tydlig information,
+          hård typografi och en anmälan direkt på sidan. Text, datum, avgift,
+          klasser och kontaktuppgifter går enkelt att byta ut i koden.
+        </div>
+
+        <div class="cta-stack">
+          <a class="button" href="#anmalan">Anmäl dig nu</a>
+          <a class="button secondary" href="#info">Se turneringsinfo</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="info">
+      <h2 class="section-title">Turneringsinfo</h2>
+      <div class="facts">
+        <article class="fact">
+          <div class="label">Datum</div>
+          <div class="value">14 Nov<br>2026</div>
+          <div class="sub">Lördag. Incheckning 10:00. Första matchstart 11:00.</div>
+        </article>
+
+        <article class="fact">
+          <div class="label">Plats</div>
+          <div class="value">Göteborg<br>Dart Hall</div>
+          <div class="sub">Lägg in er riktiga adress här samt info om parkering och kollektivtrafik.</div>
+        </article>
+
+        <article class="fact">
+          <div class="label">Klass</div>
+          <div class="value">Open<br>Singel</div>
+          <div class="sub">Kan enkelt bytas till dubbel, gruppspel, damklass eller handicap.</div>
+        </article>
+
+        <article class="fact">
+          <div class="label">Avgift</div>
+          <div class="value">250 Kr</div>
+          <div class="sub">Exempel. Du kan även lägga in Swishnummer och sista betalningsdag.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="format">
+      <h2 class="section-title">Format & regler</h2>
+      <div class="two-col">
+        <article class="panel">
+          <h3>Spelformat</h3>
+          <ul class="list">
+            <li>Gruppspel följt av slutspel.</li>
+            <li>501, straight in / dubbel ut.</li>
+            <li>Bäst av 5 legs i gruppspel.</li>
+            <li>Bäst av 7 legs i slutspel.</li>
+            <li>Seedning eller fri lottning kan väljas.</li>
+          </ul>
+        </article>
+
+        <article class="panel">
+          <h3>Praktisk info</h3>
+          <ul class="list">
+            <li>Begränsat antal platser.</li>
+            <li>Anmälan är giltig först efter bekräftelse.</li>
+            <li>Spelare ansvarar för att vara på plats i tid.</li>
+            <li>Eventuella frågor skickas till er arrangörsmejl.</li>
+            <li>Prisbord, sponsorinfo och mat kan läggas till här.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="program">
+      <h2 class="section-title">Sektioner / highlights</h2>
+      <div class="gallery">
+        <article class="poster blue">
+          <div class="tag">01 / Prize pool</div>
+          <div class="big">VINNARE<br>FINAL<br>PRESTIGE</div>
+          <div class="tag">Lägg in sponsorer, pokaler och prisfördelning.</div>
+        </article>
+
+        <article class="poster gray">
+          <div class="tag">02 / Schedule</div>
+          <div class="big">GRUPP-<br>SPEL<br>SLUTSPEL</div>
+          <div class="tag">Visa tider, tavlor, antal banor och finalstart.</div>
+        </article>
+
+        <article class="poster red">
+          <div class="tag">03 / Social</div>
+          <div class="big">MAT<br>MUSIK<br>STÄMNING</div>
+          <div class="tag">Perfekt för info om servering, lounge eller publik.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="anmalan">
+      <h2 class="section-title">Anmälan</h2>
+      <div class="register-wrap">
+        <aside class="price-box">
+          <div class="eyebrow">Begränsat antal platser</div>
+          <div class="price">ANMÄL<br>DIG</div>
+          <p>
+            Formuläret nedan är byggt för en statisk hemsida. För att ta emot riktiga
+            anmälningar behöver du koppla formuläret till till exempel Formspree,
+            Netlify Forms eller er egen backend.
+          </p>
+          <a class="button secondary" href="#kontakt">Kontakt</a>
+        </aside>
+
+        <div>
+          <!--
+            BYT action-länken nedan till din formulärtjänst.
+            Exempel Formspree:
+            action="https://formspree.io/f/DITT-ID"
+          -->
+          <form id="signupForm" action="#" method="POST">
+            <div class="form-grid">
+              <div class="field">
+                <label for="name">Namn</label>
+                <input id="name" name="name" type="text" required />
+              </div>
+
+              <div class="field">
+                <label for="club">Klubb / Lag</label>
+                <input id="club" name="club" type="text" />
+              </div>
+
+              <div class="field">
+                <label for="email">E-post</label>
+                <input id="email" name="email" type="email" required />
+              </div>
+
+              <div class="field">
+                <label for="phone">Telefon</label>
+                <input id="phone" name="phone" type="tel" required />
+              </div>
+
+              <div class="field">
+                <label for="class">Klass</label>
+                <select id="class" name="class" required>
+                  <option value="">Välj klass</option>
+                  <option>Open singel</option>
+                  <option>Dubbel</option>
+                  <option>Handicap</option>
+                  <option>Annat</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="shirt">Tröjstorlek</label>
+                <select id="shirt" name="shirt">
+                  <option value="">Välj storlek</option>
+                  <option>S</option>
+                  <option>M</option>
+                  <option>L</option>
+                  <option>XL</option>
+                  <option>XXL</option>
+                </select>
+              </div>
+
+              <div class="field full">
+                <label for="message">Övrig info</label>
+                <textarea id="message" name="message" placeholder="Till exempel dubbelpartner, allergier eller frågor."></textarea>
+              </div>
+
+              <div class="field full">
+                <label>
+                  <input type="checkbox" name="consent" required style="width:auto; margin-right:8px; vertical-align:middle;">
+                  Jag godkänner att mina uppgifter används för turneringsadministration.
+                </label>
+              </div>
+
+              <div class="field full">
+                <button class="button" type="submit">Skicka anmälan</button>
+              </div>
+            </div>
+
+            <div class="form-note">
+              Tips: Vill du att sidan ska fungera direkt på GitHub Pages kan du koppla formuläret
+              till en extern formulärtjänst. Just nu visar sidan en lokal bekräftelse efter submit.
+            </div>
+
+            <div class="status" id="statusBox"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="kontakt">
+      <h2 class="section-title">Kontakt</h2>
+      <div class="two-col">
+        <article class="panel">
+          <h3>Arrangör</h3>
+          <p>
+            Dartklubben Göteborg<br>
+            kontakt@exempel.se<br>
+            070-000 00 00
+          </p>
+        </article>
+
+        <article class="panel">
+          <h3>Adress</h3>
+          <p>
+            Exempelgatan 12<br>
+            417 00 Göteborg<br>
+            Sverige
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <footer class="footer micro">
+      <div>DART INVITATIONAL / BRUTALIST EDITION</div>
+      <div>DESIGNED FOR FAST EDITING / MOBILE READY</div>
+    </footer>
+  </div>
+
+  <script>
+    const form = document.getElementById('signupForm');
+    const statusBox = document.getElementById('statusBox');
+
+    form.addEventListener('submit', function (e) {
+      if (form.action === '#' || form.action.endsWith('/#')) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value.trim();
+        const classChoice = document.getElementById('class').value.trim();
+        const email = document.getElementById('email').value.trim();
+
+        const payload = {
+          name,
+          club: document.getElementById('club').value.trim(),
+          email,
+          phone: document.getElementById('phone').value.trim(),
+          classChoice,
+          shirt: document.getElementById('shirt').value.trim(),
+          message: document.getElementById('message').value.trim(),
+          createdAt: new Date().toISOString()
+        };
+
+        const existing = JSON.parse(localStorage.getItem('dartRegistrations') || '[]');
+        existing.push(payload);
+        localStorage.setItem('dartRegistrations', JSON.stringify(existing));
+
+        statusBox.classList.add('show');
+        statusBox.innerHTML =
+          'Tack ' + name + '! Din anmälan är sparad lokalt i webbläsaren som demo.<br>' +
+          'För riktiga anmälningar: koppla formuläret till Formspree, Netlify Forms eller egen backend.<br><br>' +
+          'Registrerad klass: ' + classChoice + '<br>' +
+          'E-post: ' + email;
+
+        form.reset();
+      }
+    });
+  </script>
+</body>
+</html>
